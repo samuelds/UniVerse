@@ -16,7 +16,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\SecurityRequestAttributes;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
-class LoginAuthenticator extends AbstractLoginFormAuthenticator
+class LoginFromAuthenticator extends AbstractLoginFormAuthenticator
 {
     use TargetPathTrait;
 
@@ -24,7 +24,9 @@ class LoginAuthenticator extends AbstractLoginFormAuthenticator
 
     private UrlGeneratorInterface $urlGenerator;
 
-    public function __construct(UrlGeneratorInterface $urlGenerator)
+    public function __construct(
+        UrlGeneratorInterface $urlGenerator
+    )
     {
         $this->urlGenerator = $urlGenerator;
     }
@@ -33,15 +35,24 @@ class LoginAuthenticator extends AbstractLoginFormAuthenticator
         Request $request
     ): Passport
     {
-        $email = $request->request->get('email', '');
+        $postedData = $request->request->all();
+        $login = $postedData['login'] ?? [];
+        $email = $login['email'] ?? '';
+        $password = $login['password'] ?? '';
+        $token = $login['_csrf_token'] ?? '';
 
-        $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $email);
-
+        $request->getSession()->set(
+            SecurityRequestAttributes::LAST_USERNAME,
+            $email
+        );
         return new Passport(
             new UserBadge($email),
-            new PasswordCredentials($request->request->get('password', '')),
+            new PasswordCredentials($password),
             [
-                new CsrfTokenBadge('authenticate', $request->request->get('_csrf_token')),
+                new CsrfTokenBadge(
+                    'authenticate',
+                    $token
+                ),
                 new RememberMeBadge(),
             ]
         );
@@ -59,7 +70,9 @@ class LoginAuthenticator extends AbstractLoginFormAuthenticator
         return new RedirectResponse($this->urlGenerator->generate('app_home'));
     }
 
-    protected function getLoginUrl(Request $request): string
+    protected function getLoginUrl(
+        Request $request
+    ): string
     {
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);
     }

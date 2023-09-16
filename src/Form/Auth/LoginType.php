@@ -2,7 +2,6 @@
 
 namespace App\Form\Auth;
 
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -39,6 +38,8 @@ class LoginType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => User::class,
+            'csrf_field_name' => '_csrf_token',
+            'csrf_token_id' => 'authenticate',
         ]);
     }
 }
