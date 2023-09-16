@@ -35,11 +35,9 @@ class LoginFromAuthenticator extends AbstractLoginFormAuthenticator
         Request $request
     ): Passport
     {
-        $postedData = $request->request->all();
-        $login = $postedData['login'] ?? [];
-        $email = $login['email'] ?? '';
-        $password = $login['password'] ?? '';
-        $token = $login['_csrf_token'] ?? '';
+        $email = $request->get('login')['email'] ?? '';
+        $password = $request->get('login')['password'] ?? '';
+        $token = $request->get('login')['_csrf_token'] ?? '';
 
         $request->getSession()->set(
             SecurityRequestAttributes::LAST_USERNAME,
