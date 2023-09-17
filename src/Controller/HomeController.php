@@ -2,21 +2,26 @@
 
 namespace App\Controller;
 
+use App\Repository\PageRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/', name: 'app_')]
+#[IsGranted('IS_AUTHENTICATED_FULLY')]
 class HomeController extends AbstractController
 {
     #[Route('/', name: 'home', methods: ['GET', 'POST'])]
-    public function home(): Response
+    public function show(
+        PageRepository $pageRepository,
+    ): Response
     {
-        // Check if user is logged in
-        if ($this->getUser()) {
-            dd("User is logged in");
-        }
-        return $this->render('home.html.twig');
+        $user = $this->getUser();
+        $pages = $pageRepository->findBy([
+            'user' => $user
+        ]);
+        dd($pages);
     }
 
 }
