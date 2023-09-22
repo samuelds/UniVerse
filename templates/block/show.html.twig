@@ -19,14 +19,9 @@
 
     <h1>{{ page.title }}</h1>
     {% for block in page.blocks %}
-        {{ block.content.text }}
-        <br />
-        <a href="{{ path('block_edit', { pageId: page.id, id: block.id }) }}">
-            Edit
-        </a>
-        <hr />
+        <p>{{ dump(block) }}</p>
     {% endfor %}
-    <a href="{{ path('block_add', { pageId: page.id }) }}">
+    <a href="{{ path('block_add', { page: page.id }) }}">
         Add a block
     </a>
 

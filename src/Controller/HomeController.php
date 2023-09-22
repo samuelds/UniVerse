@@ -8,20 +8,21 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/', name: 'app_')]
-#[IsGranted('IS_AUTHENTICATED_FULLY')]
+#[Route('/', name: 'home_')]
+#[IsGranted('ROLE_USER')]
 class HomeController extends AbstractController
 {
-    #[Route('/', name: 'home', methods: ['GET', 'POST'])]
-    public function show(
+    #[Route('/', name: 'pages', methods: ['GET'])]
+    public function pages(
         PageRepository $pageRepository,
     ): Response
     {
-        $user = $this->getUser();
         $pages = $pageRepository->findBy([
-            'user' => $user
+            'user' => $this->getUser()
         ]);
-        dd($pages);
+        return $this->render('home/pages.html.twig', [
+            'pages' => $pages
+        ]);
     }
 
 }

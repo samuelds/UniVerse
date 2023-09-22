@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Pages{% endblock %}
+
+{% block body %}
+    <ul>
+        <li>
+            <a href="{{ path('page_add') }}">
+                Create a new page
+            </a>
+        </li>
+    </ul>
+    <hr />
+
+    <h1>Pages</h1>
+    <ul>
+        {% for page in pages %}
+            <li>
+                <a href="{{ path('page_show', { 'id': page.id }) }}">
+                    {{ page.title }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

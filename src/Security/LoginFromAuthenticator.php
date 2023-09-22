@@ -20,7 +20,7 @@ class LoginFromAuthenticator extends AbstractLoginFormAuthenticator
 {
     use TargetPathTrait;
 
-    public const LOGIN_ROUTE = 'app_auth_login';
+    public const LOGIN_ROUTE = 'auth_login';
 
     private UrlGeneratorInterface $urlGenerator;
 
@@ -65,7 +65,7 @@ class LoginFromAuthenticator extends AbstractLoginFormAuthenticator
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
-        return new RedirectResponse($this->urlGenerator->generate('app_home'));
+        return new RedirectResponse($this->urlGenerator->generate('home_pages'));
     }
 
     protected function getLoginUrl(

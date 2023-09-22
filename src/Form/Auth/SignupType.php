@@ -2,8 +2,6 @@
 
 namespace App\Form\Auth;
 
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntityValidator;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\{
     EmailType,
@@ -17,7 +15,10 @@ use App\Entity\User;
 
 class SignupType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    public function buildForm(
+        FormBuilderInterface $builder,
+        array $options
+    ): void
     {
         $builder
             ->add('email', EmailType::class, [
@@ -41,7 +42,9 @@ class SignupType extends AbstractType
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
+    public function configureOptions(
+        OptionsResolver $resolver
+    ): void
     {
         $resolver->setDefaults([
             'data_class' => User::class,

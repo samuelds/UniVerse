@@ -2,10 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Page;
-use App\Form\Page\EditType;
-use App\Form\Page\NewType;
-use App\Repository\PageRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,19 +9,26 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+use App\Repository\PageRepository;
+use App\Entity\Page;
+use App\Form\Page\{
+    PageAddType,
+    PageEditType
+};
+
 #[Route('/page', name: 'page_')]
-#[IsGranted('IS_AUTHENTICATED_FULLY')]
+#[IsGranted('ROLE_USER')]
 class PageController extends AbstractController
 {
 
-    #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
+    #[Route('/add', name: 'add', methods: ['GET', 'POST'])]
     public function new(
         Request $request,
         EntityManagerInterface $em
     ): Response
     {
         $page = new Page();
-        $form = $this->createForm(NewType::class, $page);
+        $form = $this->createForm(PageAddType::class, $page);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -37,7 +40,7 @@ class PageController extends AbstractController
             ]);
         }
 
-        return $this->render('page/new.html.twig', [
+        return $this->render('page/add.html.twig', [
             'form' => $form->createView()
         ]);
     }
@@ -69,11 +72,11 @@ class PageController extends AbstractController
         if (!$page) {
             throw $this->createNotFoundException('The page does not exist');
         }
-        $form = $this->createForm(EditType::class, $page);
+        $form = $this->createForm(PageEditType::class, $page);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $page->setTitle($form->get('title')->getData());
+            $em->persist($page);
             $em->flush();
             return $this->redirectToRoute('page_show', [
                 'id' => $page->getId()
