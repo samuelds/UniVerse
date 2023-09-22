@@ -25,12 +25,32 @@ class Folder
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[ORM\ManyToOne(targetEntity: Folder::class, inversedBy: 'children')]
+    private ?Folder $parent = null;
+
+    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: Folder::class)]
+    private Collection $children;
+
     #[ORM\ManyToMany(targetEntity: Page::class, inversedBy: 'folders')]
     private Collection $page;
 
     public function __construct()
     {
         $this->page = new ArrayCollection();
+        $this->children = new ArrayCollection();
+    }
+
+    #[ORM\PrePersist]
+    public function prePersist(): void
+    {
+        $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
+    }
+
+    #[ORM\PreUpdate]
+    public function preUpdate(): void
+    {
+        $this->updatedAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -94,6 +114,42 @@ class Folder
     public function removePage(Page $page): static
     {
         $this->page->removeElement($page);
+
+        return $this;
+    }
+
+    public function getParent(): ?Folder
+    {
+        return $this->parent;
+    }
+
+    public function setParent(?Folder $parent): static
+    {
+        $this->parent = $parent;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Folder>
+     */
+    public function getChildren(): Collection
+    {
+        return $this->children;
+    }
+
+    public function addChild(Folder $child): static
+    {
+        if (!$this->children->contains($child)) {
+            $this->children->add($child);
+        }
+
+        return $this;
+    }
+
+    public function removeChild(Folder $child): static
+    {
+        $this->children->removeElement($child);
 
         return $this;
     }
