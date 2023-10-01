@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Page;
 use App\Repository\BlockRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,7 +18,7 @@ use App\Form\Block\{
 };
 
 #[Route('/page/{pageId}/block', name: 'block_')]
-#[IsGranted('ROLE_USER')]
+#[IsGranted('IS_AUTHENTICATED_FULLY')]
 class
 BlockController extends AbstractController
 {

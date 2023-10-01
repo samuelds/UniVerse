@@ -17,7 +17,7 @@ use App\Form\Page\{
 };
 
 #[Route('/page', name: 'page_')]
-#[IsGranted('ROLE_USER')]
+#[IsGranted('IS_AUTHENTICATED_FULLY')]
 class PageController extends AbstractController
 {
 
